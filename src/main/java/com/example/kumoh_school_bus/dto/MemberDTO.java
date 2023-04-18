@@ -9,5 +9,6 @@ public class MemberDTO {
   private String memberID;
   private String loginID;
   private String password;
+  private String type;
   private String token;
 }

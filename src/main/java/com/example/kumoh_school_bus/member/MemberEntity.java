@@ -21,4 +21,5 @@ public class MemberEntity {
   private String memberID;
   private String loginID;
   private String password;
+  private String type;
 }

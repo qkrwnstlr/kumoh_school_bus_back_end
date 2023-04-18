@@ -29,11 +29,13 @@ public class MemberController {
       MemberEntity user = MemberEntity.builder()
           .loginID(memberDTO.getLoginID())
           .password(passwordEncoder.encode(memberDTO.getPassword()))
+          .type(memberDTO.getType())
           .build();
       MemberEntity registeredUser = memberService.create(user);
       MemberDTO responseUserDTO = MemberDTO.builder()
           .loginID(registeredUser.getLoginID())
           .password(passwordEncoder.encode(registeredUser.getPassword()))
+          .type(memberDTO.getType())
           .build();
       return ResponseEntity.ok().body(responseUserDTO);
     } catch (Exception e) {
@@ -53,6 +55,7 @@ public class MemberController {
     final MemberDTO responseUserDTO = MemberDTO.builder()
         .loginID(member.getLoginID())
         .password(passwordEncoder.encode(member.getPassword()))
+        .type(member.getType())
         .token(token)
         .build();
     return ResponseEntity.ok(responseUserDTO);
