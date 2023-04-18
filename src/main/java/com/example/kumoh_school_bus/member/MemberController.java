@@ -27,13 +27,13 @@ public class MemberController {
   public ResponseEntity<?> registerUser(@RequestBody MemberDTO memberDTO) {
     try {
       MemberEntity user = MemberEntity.builder()
-          .loginID(memberDTO.getLoginID())
+          .loginId(memberDTO.getLoginId())
           .password(passwordEncoder.encode(memberDTO.getPassword()))
           .type(memberDTO.getType())
           .build();
       MemberEntity registeredUser = memberService.create(user);
       MemberDTO responseUserDTO = MemberDTO.builder()
-          .loginID(registeredUser.getLoginID())
+          .loginId(registeredUser.getLoginId())
           .password(passwordEncoder.encode(registeredUser.getPassword()))
           .type(memberDTO.getType())
           .build();
@@ -46,14 +46,14 @@ public class MemberController {
 
   @PostMapping("/signin")
   public ResponseEntity<?> authenticate(@RequestBody MemberDTO memberDTO) {
-    MemberEntity member = memberService.getByCredentials(memberDTO.getLoginID(), memberDTO.getPassword(), passwordEncoder);
+    MemberEntity member = memberService.getByCredentials(memberDTO.getLoginId(), memberDTO.getPassword(), passwordEncoder);
     if (member == null) {
       ResponseDTO<Object> responseDTO = ResponseDTO.builder().error("Login Failed").build();
       return ResponseEntity.badRequest().body(responseDTO);
     }
     final String token = tokenProvider.create(member);
     final MemberDTO responseUserDTO = MemberDTO.builder()
-        .loginID(member.getLoginID())
+        .loginId(member.getLoginId())
         .password(passwordEncoder.encode(member.getPassword()))
         .type(member.getType())
         .token(token)

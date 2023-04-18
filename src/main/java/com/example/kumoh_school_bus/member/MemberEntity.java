@@ -18,8 +18,8 @@ public class MemberEntity {
   @Id
   @GeneratedValue(generator = "system-uuid")
   @GenericGenerator(name = "system-uuid", strategy = "uuid")
-  private String memberID;
-  private String loginID;
+  private String memberId;
+  private String loginId;
   private String password;
   private String type;
 }

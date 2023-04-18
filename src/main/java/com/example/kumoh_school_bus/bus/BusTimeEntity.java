@@ -19,11 +19,11 @@ public class BusTimeEntity {
   @Id
   @GeneratedValue(generator = "system-uuid")
   @GenericGenerator(name="system-uuid", strategy = "uuid")
-  private String busTimeID;
+  private String busTimeId;
   private String busTimeDeparture;
   private int busTimeNum;
   @ManyToOne
-  @JoinColumn(name="busID")
+  @JoinColumn(name="busId")
   private BusEntity bus;
   @OneToMany(mappedBy = "busTime")
   private List<BusTimeSeatEntity> busTimeSeats;

@@ -19,7 +19,7 @@ public class BusEntity {
   @Id
   @GeneratedValue(generator = "system-uuid")
   @GenericGenerator(name="system-uuid", strategy = "uuid")
-  private String busID;
+  private String busId;
   private String busNum;
   private int busSeat;
   private String busType;

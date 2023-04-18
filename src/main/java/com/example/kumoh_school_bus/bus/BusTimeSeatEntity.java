@@ -1,5 +1,6 @@
 package com.example.kumoh_school_bus.bus;
 
+import com.example.kumoh_school_bus.reservation.ReservationEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,11 +19,11 @@ public class BusTimeSeatEntity {
   @Id
   @GeneratedValue(generator = "system-uuid")
   @GenericGenerator(name="system-uuid", strategy = "uuid")
-  private String busTimeSeatID;
+  private String busTimeSeatId;
   private String busTimeSeatDate;
   private int busTimeSeatNum;
   private boolean busTimeSeatIsReserved;
   @ManyToOne
-  @JoinColumn(name = "busTimeID")
+  @JoinColumn(name = "busTimeId")
   private BusTimeEntity busTime;
 }

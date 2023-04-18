@@ -18,14 +18,14 @@ public class RouteEntity {
   @Id
   @GeneratedValue(generator = "system-uuid")
   @GenericGenerator(name="system-uuid", strategy = "uuid")
-  private String routeID;
+  private String routeId;
 
   private int routeNum;
   private int routeTime;
   @ManyToOne
-  @JoinColumn(name="busID")
+  @JoinColumn(name="busId")
   private BusEntity bus;
   @ManyToOne
-  @JoinColumn(name="stationID")
+  @JoinColumn(name="stationId")
   private StationEntity station;
 }

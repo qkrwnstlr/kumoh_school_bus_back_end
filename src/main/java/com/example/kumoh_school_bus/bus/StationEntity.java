@@ -21,7 +21,7 @@ public class StationEntity {
   @Id
   @GeneratedValue(generator = "system-uuid")
   @GenericGenerator(name="system-uuid", strategy = "uuid")
-  private String stationID;
+  private String stationId;
   private String stationName;
   private double stationLat;
   private double stationLng;

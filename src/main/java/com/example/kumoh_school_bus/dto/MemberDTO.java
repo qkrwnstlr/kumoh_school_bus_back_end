@@ -6,8 +6,8 @@ import lombok.Data;
 @Data
 @Builder
 public class MemberDTO {
-  private String memberID;
-  private String loginID;
+  private String memberId;
+  private String loginId;
   private String password;
   private String type;
   private String token;
