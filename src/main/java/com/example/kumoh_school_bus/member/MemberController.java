@@ -30,11 +30,15 @@ public class MemberController {
           .loginId(memberDTO.getLoginId())
           .password(passwordEncoder.encode(memberDTO.getPassword()))
           .type(memberDTO.getType())
+          .name(memberDTO.getName())
+          .major(memberDTO.getMajor())
           .build();
       MemberEntity registeredUser = memberService.create(member);
       MemberDTO responseUserDTO = MemberDTO.builder()
           .loginId(registeredUser.getLoginId())
           .password(passwordEncoder.encode(registeredUser.getPassword()))
+          .name(registeredUser.getName())
+          .major(registeredUser.getMajor())
           .type(memberDTO.getType())
           .build();
       return ResponseEntity.ok().body(responseUserDTO);
@@ -56,6 +60,8 @@ public class MemberController {
         .loginId(member.getLoginId())
         .password(passwordEncoder.encode(member.getPassword()))
         .type(member.getType())
+        .name(member.getName())
+        .major(member.getMajor())
         .token(token)
         .build();
     return ResponseEntity.ok(responseUserDTO);

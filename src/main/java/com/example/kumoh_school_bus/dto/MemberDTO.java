@@ -10,5 +10,7 @@ public class MemberDTO {
   private String loginId;
   private String password;
   private String type;
+  private String name;
+  private String major;
   private String token;
 }
