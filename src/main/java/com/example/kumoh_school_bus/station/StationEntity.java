@@ -1,4 +1,4 @@
-package com.example.kumoh_school_bus.bus;
+package com.example.kumoh_school_bus.station;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

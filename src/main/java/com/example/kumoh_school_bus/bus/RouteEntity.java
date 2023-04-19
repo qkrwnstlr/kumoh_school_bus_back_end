@@ -1,5 +1,6 @@
 package com.example.kumoh_school_bus.bus;
 
+import com.example.kumoh_school_bus.station.StationEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +20,6 @@ public class RouteEntity {
   @GeneratedValue(generator = "system-uuid")
   @GenericGenerator(name="system-uuid", strategy = "uuid")
   private String routeId;
-
   private int routeNum;
   private int routeTime;
   @ManyToOne

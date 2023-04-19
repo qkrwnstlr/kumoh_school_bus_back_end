@@ -26,12 +26,12 @@ public class MemberController {
   @PostMapping("/signup")
   public ResponseEntity<?> registerUser(@RequestBody MemberDTO memberDTO) {
     try {
-      MemberEntity user = MemberEntity.builder()
+      MemberEntity member = MemberEntity.builder()
           .loginId(memberDTO.getLoginId())
           .password(passwordEncoder.encode(memberDTO.getPassword()))
           .type(memberDTO.getType())
           .build();
-      MemberEntity registeredUser = memberService.create(user);
+      MemberEntity registeredUser = memberService.create(member);
       MemberDTO responseUserDTO = MemberDTO.builder()
           .loginId(registeredUser.getLoginId())
           .password(passwordEncoder.encode(registeredUser.getPassword()))
@@ -59,5 +59,22 @@ public class MemberController {
         .token(token)
         .build();
     return ResponseEntity.ok(responseUserDTO);
+  }
+
+  @PutMapping("/edit")
+  public void editUserInfo(@RequestBody MemberDTO memberDTO) {
+    MemberEntity member = MemberEntity.builder()
+        .loginId(memberDTO.getLoginId())
+        .password(passwordEncoder.encode(memberDTO.getPassword()))
+        .build();
+    memberService.edit(member);
+  }
+
+  @DeleteMapping("/remove/{id}")
+  public void removeUserInfo(@PathVariable String id) {
+    MemberEntity member = MemberEntity.builder()
+        .loginId(id)
+        .build();
+    memberService.delete(member);
   }
 }

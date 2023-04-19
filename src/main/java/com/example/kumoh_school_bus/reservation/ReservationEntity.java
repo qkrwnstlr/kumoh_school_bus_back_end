@@ -2,6 +2,7 @@ package com.example.kumoh_school_bus.reservation;
 
 import com.example.kumoh_school_bus.bus.BusTimeSeatEntity;
 import com.example.kumoh_school_bus.member.MemberEntity;
+import com.example.kumoh_school_bus.station.StationEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,9 +24,13 @@ public class ReservationEntity {
   private String reservationId;
   private String state;
   @OneToOne
-  @JoinColumn(name = "busTimeSeatID")
+  @JoinColumn(name = "busTimeSeatId")
   private BusTimeSeatEntity busTimeSeat;
   @ManyToOne
-  @JoinColumn(name = "memberID")
+  @JoinColumn(name = "memberId")
   private MemberEntity member;
+
+  @OneToOne
+  @JoinColumn(name = "stationId")
+  private StationEntity station;
 }
