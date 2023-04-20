@@ -14,6 +14,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "bus")
 public class BusEntity {
   @Id
   @GeneratedValue(generator = "system-uuid")
