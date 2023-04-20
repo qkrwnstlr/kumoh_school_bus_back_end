@@ -24,14 +24,16 @@ public class ReservationService {
   private final BusTimeSeatRepository busTimeSeatRepository;
   private final BusRepository busRepository;
   private final BusTimeRepository busTimeRepository;
+  private final RouteRepository routeRepository;
 
-  public ReservationService(ReservationRepository reservationRepository, StationRepository stationRepository, MemberRepository memberRepository, BusTimeSeatRepository busTimeSeatRepository, BusRepository busRepository, BusTimeRepository busTimeRepository) {
+  public ReservationService(ReservationRepository reservationRepository, StationRepository stationRepository, MemberRepository memberRepository, BusTimeSeatRepository busTimeSeatRepository, BusRepository busRepository, BusTimeRepository busTimeRepository, RouteRepository routeRepository) {
     this.reservationRepository = reservationRepository;
     this.stationRepository = stationRepository;
     this.memberRepository = memberRepository;
     this.busTimeSeatRepository = busTimeSeatRepository;
     this.busRepository = busRepository;
     this.busTimeRepository = busTimeRepository;
+    this.routeRepository = routeRepository;
   }
 
   @Transactional
@@ -40,7 +42,7 @@ public class ReservationService {
     BusEntity bus = busRepository.findByBusNum(requestDTO.getBy());
     BusTimeEntity busTime = busTimeRepository.findByBusAndBusTimeDeparture(bus, requestDTO.getDeparture());
     BusTimeSeatEntity busTimeSeat = busTimeSeatRepository.findByBusTimeAndBusTimeSeatDateAndBusTimeSeatNum(busTime, requestDTO.getWhen(), requestDTO.getSeatNum());
-    if(busTimeSeat.isBusTimeSeatIsReserved()) throw new RuntimeException("is already reserved");
+    if (busTimeSeat.isBusTimeSeatIsReserved()) throw new RuntimeException("is already reserved");
     MemberEntity member = memberRepository.findByLoginId(loginId);
 
     ReservationEntity reservationEntity = ReservationEntity.builder()
@@ -63,8 +65,9 @@ public class ReservationService {
   List<ReservationDTO> getAllReservationByMember(String loginId) {
     List<ReservationEntity> reservationEntities = reservationRepository.findAllByMember_LoginId(loginId);
     return reservationEntities.stream().map(e -> {
-      if(!Objects.equals(e.getState(), "예약됨")) return null;
-      return ReservationDTO.builder().id(e.getReservationId()).station(e.getStation().getStationName()).type(e.getBusTimeSeat().getBusTime().getBus().getBusType()).when(e.getBusTimeSeat().getBusTimeSeatDate()).by(e.getBusTimeSeat().getBusTime().getBus().getBusNum()).seatNum(e.getBusTimeSeat().getBusTimeSeatNum()).build();
+      if (!Objects.equals(e.getState(), "예약됨")) return null;
+      RouteEntity routeEntity = routeRepository.findByStationAndBus(e.getStation(), e.getBusTimeSeat().getBusTime().getBus());
+      return ReservationDTO.builder().id(e.getReservationId()).station(e.getStation().getStationName()).type(e.getBusTimeSeat().getBusTime().getBus().getBusType()).when(e.getBusTimeSeat().getBusTimeSeatDate()).by(e.getBusTimeSeat().getBusTime().getBus().getBusNum()).seatNum(e.getBusTimeSeat().getBusTimeSeatNum()).taken(routeEntity.getRouteTime()).at(e.getBusTimeSeat().getBusTime().getBusTimeDeparture()).build();
     }).collect(Collectors.toList());
   }
 
@@ -74,10 +77,10 @@ public class ReservationService {
     BusTimeDTO busTimeDTO = BusTimeDTO.builder().startTime(busTimeEntity.getBusTimeDeparture()).endTime("").build();
 
     List<TimeSeatReservationDTO> timeSeatReservationList = new ArrayList<>();
-    for(BusTimeSeatEntity busTimeSeatEntity: busTimeEntity.getBusTimeSeats()) {
+    for (BusTimeSeatEntity busTimeSeatEntity : busTimeEntity.getBusTimeSeats()) {
       TimeSeatReservationDTO timeSeatReservationDTO;
       TimeSeatDTO timeSeatDTO = TimeSeatDTO.builder().isReserved(busTimeSeatEntity.isBusTimeSeatIsReserved()).seatNum(busTimeSeatEntity.getBusTimeSeatNum()).build();
-      if(timeSeatDTO.isReserved()) {
+      if (timeSeatDTO.isReserved()) {
         MemberEntity memberEntity = reservationRepository.findByBusTimeSeat(busTimeSeatEntity).getMember();
         MemberDTO memberDTO = MemberDTO.builder().loginId(memberEntity.getLoginId()).name(memberEntity.getName()).major(memberEntity.getMajor()).build();
         timeSeatReservationDTO = TimeSeatReservationDTO.builder().timeSeatDTO(timeSeatDTO).memberDTO(memberDTO).build();

@@ -21,7 +21,7 @@ public class RouteEntity {
   @GenericGenerator(name="system-uuid", strategy = "uuid")
   private String routeId;
   private int routeNum;
-  private int routeTime;
+  private String routeTime;
   @ManyToOne
   @JoinColumn(name="busId")
   private BusEntity bus;

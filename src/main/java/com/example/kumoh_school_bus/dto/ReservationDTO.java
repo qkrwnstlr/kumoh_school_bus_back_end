@@ -12,4 +12,6 @@ public class ReservationDTO {
   String by;
   String when;
   int seatNum;
+  String taken;
+  String at;
 }

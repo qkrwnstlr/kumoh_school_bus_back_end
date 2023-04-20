@@ -29,10 +29,11 @@ public class BusService {
     List<RouteEntity> routeEntities = routeRepository.findAllByBus_BusTypeAndStation(requestDTO.getType(), stationEntity);
     List<BusEntity> busEntities = routeEntities.stream().map(RouteEntity::getBus).collect(Collectors.toList());
     List<BusDTO> busDTOList = new ArrayList<>();
-    for (BusEntity busEntity : busEntities) {
+    for (int i = 0; i < busEntities.size(); i++) {
+      BusEntity busEntity = busEntities.get(i);
       List<BusTimeSeatDTO> busTimeSeatList = new ArrayList<>();
       for (BusTimeEntity busTimeEntity : busEntity.getBusTimes()) {
-        BusTimeDTO busTimeDTO = BusTimeDTO.builder().startTime(busTimeEntity.getBusTimeDeparture()).endTime("").build();
+        BusTimeDTO busTimeDTO = BusTimeDTO.builder().startTime(busTimeEntity.getBusTimeDeparture()).endTime(routeEntities.get(i).getRouteTime()).build();
         List<TimeSeatDTO> timeSeatList = new ArrayList<>();
         for (BusTimeSeatEntity busTimeSeatEntity : busTimeEntity.getBusTimeSeats()) {
           if (busTimeSeatEntity.isBusTimeSeatIsReserved()) continue;

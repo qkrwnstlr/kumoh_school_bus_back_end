@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface RouteRepository extends JpaRepository<RouteEntity, String> {
   List<RouteEntity> findAllByBus_BusTypeAndStation(String bus_busType, StationEntity station);
+  RouteEntity findByStationAndBus(StationEntity station, BusEntity bus);
 }
