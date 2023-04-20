@@ -60,4 +60,27 @@ public class ReservationController {
   public BusTimeReservationDTO getAllReservationByBus(@PathVariable String busTimeId) {
     return reservationService.getAllReservationByBus(busTimeId);
   }
+
+  @GetMapping("/chart")
+  public ResponseEntity<?> getAllFinishedReservation() {
+    try {
+      List<ReservationDTO> entities = reservationService.getAllFinishedReservation();
+      ResponseDTO<ReservationDTO> response = ResponseDTO.<ReservationDTO>builder().data(entities).build();
+      return ResponseEntity.ok().body(response);
+    } catch (Exception e) {
+      return onError(e);
+    }
+  }
+
+  @PostMapping("/finish/{busTimeId}")
+  public ResponseEntity<?> finishDriving(@PathVariable String busTimeId) {
+    try {
+      reservationService.finish(busTimeId);
+      ResponseDTO<SelectResponseDTO> responseDTO = ResponseDTO.<SelectResponseDTO>builder().build();
+      return ResponseEntity.ok().body(responseDTO);
+    } catch (Exception e) {
+      ResponseDTO<Object> responseDTO = ResponseDTO.builder().error(e.getMessage()).build();
+      return ResponseEntity.badRequest().body(responseDTO);
+    }
+  }
 }

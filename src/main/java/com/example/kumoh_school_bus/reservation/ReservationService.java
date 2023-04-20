@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -54,25 +53,35 @@ public class ReservationService {
     return getAllReservationByMember(loginId);
   }
 
+  @Transactional
   List<ReservationDTO> removeReservation(String reservationId, String loginId) {
     ReservationEntity reservationEntity = reservationRepository.findByReservationId(reservationId);
     reservationEntity.getBusTimeSeat().setBusTimeSeatIsReserved(false);
-    reservationRepository.deleteById(reservationId);
+    reservationEntity.setState("취소됨");
+    reservationRepository.save(reservationEntity);
     busTimeSeatRepository.save(reservationEntity.getBusTimeSeat());
     return getAllReservationByMember(loginId);
   }
 
   List<ReservationDTO> getAllReservationByMember(String loginId) {
-    List<ReservationEntity> reservationEntities = reservationRepository.findAllByMember_LoginId(loginId);
+    List<ReservationEntity> reservationEntities = reservationRepository.findAllByMember_LoginIdAndState(loginId, "예약됨");
     return reservationEntities.stream().map(e -> {
-      if (!Objects.equals(e.getState(), "예약됨")) return null;
       RouteEntity routeEntity = routeRepository.findByStationAndBus(e.getStation(), e.getBusTimeSeat().getBusTime().getBus());
-      return ReservationDTO.builder().id(e.getReservationId()).station(e.getStation().getStationName()).type(e.getBusTimeSeat().getBusTime().getBus().getBusType()).when(e.getBusTimeSeat().getBusTimeSeatDate()).by(e.getBusTimeSeat().getBusTime().getBus().getBusNum()).seatNum(e.getBusTimeSeat().getBusTimeSeatNum()).taken(routeEntity.getRouteTime()).at(e.getBusTimeSeat().getBusTime().getBusTimeDeparture()).build();
+      return ReservationDTO.builder()
+          .id(e.getReservationId())
+          .station(e.getStation().getStationName())
+          .type(e.getBusTimeSeat().getBusTime().getBus().getBusType())
+          .when(e.getBusTimeSeat().getBusTimeSeatDate())
+          .by(e.getBusTimeSeat().getBusTime().getBus().getBusNum())
+          .seatNum(e.getBusTimeSeat().getBusTimeSeatNum())
+          .taken(routeEntity.getRouteTime())
+          .at(e.getBusTimeSeat().getBusTime().getBusTimeDeparture())
+          .build();
     }).collect(Collectors.toList());
   }
 
   BusTimeReservationDTO getAllReservationByBus(String busTimeId) {
-    BusTimeEntity busTimeEntity = busTimeRepository.findAllByBusTimeId(busTimeId);
+    BusTimeEntity busTimeEntity = busTimeRepository.findByBusTimeId(busTimeId);
 
     BusTimeDTO busTimeDTO = BusTimeDTO.builder().startTime(busTimeEntity.getBusTimeDeparture()).endTime("").build();
 
@@ -91,5 +100,21 @@ public class ReservationService {
     }
 
     return BusTimeReservationDTO.builder().busTimeDTO(busTimeDTO).timeSeatReservationList(timeSeatReservationList).build();
+  }
+
+  List<ReservationDTO> getAllFinishedReservation() {
+    List<ReservationEntity> reservationEntities = reservationRepository.findAllByState("완료됨");
+    return reservationEntities.stream().map(e -> ReservationDTO.builder()
+        .when(e.getBusTimeSeat().getBusTimeSeatDate())
+        .build()).collect(Collectors.toList());
+  }
+
+
+  void finish(String busTimeId) {
+    List<ReservationEntity> reservationEntities = reservationRepository.findAllByBusTimeSeat_BusTimeAndState(busTimeRepository.findByBusTimeId(busTimeId), "예약됨");
+    for (ReservationEntity reservationEntity : reservationEntities) {
+      reservationEntity.setState("완료됨");
+      reservationRepository.save(reservationEntity);
+    }
   }
 }
