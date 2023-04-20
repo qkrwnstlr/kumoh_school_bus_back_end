@@ -1,8 +1,6 @@
 package com.example.kumoh_school_bus.reservation;
 
-import com.example.kumoh_school_bus.dto.ReservationAddRequestDTO;
-import com.example.kumoh_school_bus.dto.ReservationDTO;
-import com.example.kumoh_school_bus.dto.ResponseDTO;
+import com.example.kumoh_school_bus.dto.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,9 +24,9 @@ public class ReservationController {
   }
 
   @GetMapping("/{loginId}")
-  public ResponseEntity<?> getAllReservation(@PathVariable String loginId) {
+  public ResponseEntity<?> getAllReservationByMember(@PathVariable String loginId) {
     try {
-      List<ReservationDTO> entities = reservationService.getAllReservation(loginId);
+      List<ReservationDTO> entities = reservationService.getAllReservationByMember(loginId);
       ResponseDTO<ReservationDTO> response = ResponseDTO.<ReservationDTO>builder().data(entities).build();
       return ResponseEntity.ok().body(response);
     } catch (Exception e) {
@@ -56,5 +54,10 @@ public class ReservationController {
     } catch (Exception e) {
       return onError(e);
     }
+  }
+
+  @GetMapping("/bus/{busTimeId}")
+  public BusTimeReservationDTO getAllReservationByBus(@PathVariable String busTimeId) {
+    return reservationService.getAllReservationByBus(busTimeId);
   }
 }

@@ -14,7 +14,6 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "bus")
 public class BusEntity {
   @Id
   @GeneratedValue(generator = "system-uuid")
@@ -25,7 +24,6 @@ public class BusEntity {
   private String busType;
   @OneToMany(mappedBy = "bus")
   private List<BusTimeEntity> busTimes;
-
   @OneToMany(mappedBy = "bus")
   private List<RouteEntity> route;
 }
