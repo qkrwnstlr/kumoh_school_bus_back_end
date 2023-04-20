@@ -11,6 +11,6 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
   List<ReservationEntity> findAllByMember_LoginId(String loginId);
   List<ReservationEntity> findAllByMember_LoginIdAndState(String member_loginId, String state);
   ReservationEntity findByBusTimeSeat(BusTimeSeatEntity busTimeSeat);
-  List<ReservationEntity> findAllByState(String state);
+  List<ReservationEntity> findAllByStateNot(String state);
   List<ReservationEntity> findAllByBusTimeSeat_BusTimeAndState(BusTimeEntity busTimeSeat_busTime, String state);
 }

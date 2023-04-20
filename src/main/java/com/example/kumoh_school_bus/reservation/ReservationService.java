@@ -103,7 +103,7 @@ public class ReservationService {
   }
 
   List<ReservationDTO> getAllFinishedReservation() {
-    List<ReservationEntity> reservationEntities = reservationRepository.findAllByState("완료됨");
+    List<ReservationEntity> reservationEntities = reservationRepository.findAllByStateNot("취소됨");
     return reservationEntities.stream().map(e -> ReservationDTO.builder()
         .when(e.getBusTimeSeat().getBusTimeSeatDate())
         .build()).collect(Collectors.toList());
